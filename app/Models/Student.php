@@ -17,6 +17,10 @@ class Student extends Model
         'class_id',
         'section_id'
     ];
+    protected $with = [
+        'class',
+        'section'
+    ];
 
     public function class()
     {
