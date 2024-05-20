@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UsersTableSeeder extends Seeder
 {
@@ -12,6 +13,13 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $users = [
+            [
+                'name' => 'Admin',
+                'email' => 'admin@mail.com',
+                'password'=> bcrypt('password'),
+            ]
+        ];
+        User::insert($users);
     }
 }

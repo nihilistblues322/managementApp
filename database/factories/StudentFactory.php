@@ -17,8 +17,8 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->fake()->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
         ];
     }
 }
