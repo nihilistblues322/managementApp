@@ -30,7 +30,7 @@
                 <MagnifyingGlass />
               </div>
 
-              <input type="text" v-model="searchTerm" placeholder="Search students data..." id="search"
+              <input type="text" v-model="search" placeholder="Search students data..." id="search"
                 class="block py-2 pl-10 text-gray-900 border-0 rounded-lg ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
             </div>
           </div>
@@ -111,7 +111,8 @@
 import Pagination from './../../Components/Pagination.vue'
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue'
 import MagnifyingGlass from "@/Components/Icons/MagnifyingGlass.vue"
-import { Head, Link, useForm } from '@inertiajs/vue3'
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3'
+import { computed, ref, watch } from 'vue'
 
 defineProps({
   students: {
@@ -119,6 +120,32 @@ defineProps({
     required: true
   }
 })
+
+const search = ref(usePage().props.search), pageNumber = ref(1)
+
+const studentsUrl = computed(() => {
+  let url = new URL
+    (route('students.index'))
+  url.searchParams.append('page', pageNumber.value)
+  if (search.value) {
+    url.searchParams.append('search', search.value)
+  }
+
+  return url
+})
+
+watch(() => studentsUrl.value,
+  (updatedStudentsUrl) => {
+    router.visit(updatedStudentsUrl,
+      {
+        preserveScroll: true,
+        preserveState: true,
+        replace: true
+      }
+    )
+  }
+
+)
 
 const deleteForm = useForm({})
 const deleteStudent = (studentId) => {
