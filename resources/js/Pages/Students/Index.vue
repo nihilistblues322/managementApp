@@ -6,13 +6,12 @@
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Students</h2>
     </template>
-    <div class="bg-gray-100 py-10">
+    <div class="bg-gray-100 py-4">
       <div class="mx-auto max-w-7xl">
         <div class="px-4 sm:px-6 lg:px-8">
           <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-              <h1 class="text-xl font-semibold text-gray-900">Students</h1>
-              <p class="mt-2 text-sm text-gray-700">A list of all the Students.</p>
+              <p class=" text-sm text-gray-700">A list of all the Students.</p>
             </div>
 
             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -91,7 +90,7 @@
                     </tbody>
                   </table>
                 </div>
-
+                <Pagination :data="students"/>
               </div>
             </div>
           </div>
@@ -103,6 +102,7 @@
 
 
 <script setup>
+import Pagination from './../../Components/Pagination.vue'
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue'
 import MagnifyingGlass from "@/Components/Icons/MagnifyingGlass.vue"
 
