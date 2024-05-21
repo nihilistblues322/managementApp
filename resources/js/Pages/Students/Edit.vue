@@ -1,17 +1,17 @@
 <template>
 
-  <Head title="Create Students" />
+  <Head title="Update Students" />
 
   <AuthenticatedLayout>
     <template #header>
       <h2 class="text-xl font-semibold leading-tight text-gray-800">
-        Create Student
+        Update Student
       </h2>
     </template>
     <div class="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8 ">
       <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
         <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-12">
-          <form @submit.prevent="createStudent">
+          <form @submit.prevent="updateStudent">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
               <div class="px-4 py-6 space-y-6 bg-white sm:p-6">
                 <div>
@@ -84,7 +84,7 @@
                 </Link>
                 <button type="submit"
                   class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  Save
+                  Update
                 </button>
               </div>
             </div>
@@ -98,10 +98,14 @@
 <script setup>
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue'
 import InputError from '../../Components/InputError.vue'
-import { Head, Link, useForm } from '@inertiajs/vue3'
-import { ref, watch } from 'vue'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
+import { onMounted, ref, watch } from 'vue'
 defineProps({
   classes: {
+    type: Object,
+    require: true
+  },
+  student: {
     type: Object,
     require: true
   }
@@ -109,10 +113,10 @@ defineProps({
 
 const sections = ref({})
 const form = useForm({
-  name: '',
-  email: '',
-  class_id: '',
-  section_id: '',
+  name: usePage().props.student.data.name,
+  email: usePage().props.student.data.email,
+  class_id: usePage().props.student.data.class.id,
+  section_id: usePage().props.student.data.section.id,
 })
 
 watch(
@@ -121,6 +125,8 @@ watch(
     getSections(newValue)
   })
 
+onMounted(()=> getSections(form.class_id) ) 
+
 const getSections = (classId) => {
   axios.get('/api/sections?class_id=' + classId).then((response) => {
     sections.value = response.data
@@ -128,7 +134,9 @@ const getSections = (classId) => {
 
 }
 
-const createStudent = () => {
-  form.post(route('students.store'))
+const updateStudent = () => {
+  form.put(route('students.update', usePage().props.student.data.id), {
+
+  })
 }
 </script>

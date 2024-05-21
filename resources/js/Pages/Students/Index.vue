@@ -4,7 +4,9 @@
 
   <AuthenticatedLayout>
     <template #header>
-      <h2 class="text-xl font-semibold leading-tight text-gray-800">Students</h2>
+      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+        Student List
+      </h2>
     </template>
     <div class="py-4 bg-gray-100">
       <div class="mx-auto max-w-7xl">
@@ -82,9 +84,10 @@
                           {{ student.created_at }}
                         </td>
                         <td class="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
-                          <button class="ml-2 text-indigo-600 hover:text-indigo-900">
-                            Edit
-                          </button>
+                          <Link :href="route('students.edit', student.id)"
+                            class="ml-2 text-indigo-600 hover:text-indigo-900">
+                          Edit
+                          </Link>
                           <button class="ml-2 text-indigo-600 hover:text-indigo-900">
                             Delete
                           </button>
