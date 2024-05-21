@@ -96,7 +96,7 @@
                     </tbody>
                   </table>
                 </div>
-                <Pagination :data="students" />
+                <Pagination :data="students" :updatedPageNumber="updatedPageNumber"/>
               </div>
             </div>
           </div>
@@ -133,6 +133,10 @@ const studentsUrl = computed(() => {
 
   return url
 })
+
+const updatedPageNumber = (link) => {
+  pageNumber.value = link.url.split('=')[1]
+}
 
 watch(() => studentsUrl.value,
   (updatedStudentsUrl) => {
