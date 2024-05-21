@@ -11,7 +11,7 @@
     <div class="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
         <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-12">
-          <form @submit.prevent="submit">
+          <form @submit.prevent="createStudent">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
               <div class="px-4 py-6 space-y-6 bg-white sm:p-6">
                 <div>
@@ -26,22 +26,30 @@
                 <div class="grid grid-cols-6 gap-6">
                   <div class="col-span-6 sm:col-span-3">
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" id="name"
-                      class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-                    <InputError class="mt-2" />
+                    <input v-model="form.name" type="text" id="name"
+                      class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      :class="{ 'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-500': form.errors.name }" />
+                    <InputError :message="form.errors.name" class="mt-2" />
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
                     <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input type="email" id="email" autocomplete="email"
-                      class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-                    <InputError class="mt-2" />
+                    <input v-model="form.email" type="email" id="email" autocomplete="email"
+                      class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      :class="{
+                        'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-500': form.errors.email
+                      }" />
+                    <InputError :message="form.errors.email" class="mt-2" />
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
                     <label for="class_id" class="block text-sm font-medium text-gray-700">Class</label>
-                    <select id="class_id"
-                      class="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <select v-model="form.class_id" id="class_id"
+                      class="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      :class="{
+                        'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-500': form.errors.class_id
+                      }">
+
                       <option value="">
                         Select a Class
                       </option>
@@ -49,21 +57,23 @@
                         {{ item.name }}
                       </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError :message="form.errors.class_id" class="mt-2" />
                   </div>
 
                   <div class="col-span-6 sm:col-span-3">
                     <label for="section_id" class="block text-sm font-medium text-gray-700">Section</label>
-                    <select id="section_id"
-                      class="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <select v-model="form.section_id" id="section_id"
+                      class="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      :class="{ 'text-red-900 focus:ring-red-500 focus:border-red-500 border-red-500': form.errors.section_id }">
+
                       <option value="">
                         Select a Section
                       </option>
-                      <option>
-                        Select a Section
+                      <option v-for="section in sections.data" :key="section.id" :value="section.id">
+                        {{ section.name }}
                       </option>
                     </select>
-                    <InputError class="mt-2" />
+                    <InputError :message="form.errors.section_id" class="mt-2" />
                   </div>
                 </div>
               </div>
@@ -88,11 +98,37 @@
 <script setup>
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue'
 import InputError from '../../Components/InputError.vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, useForm } from '@inertiajs/vue3'
+import { ref, watch } from 'vue'
 defineProps({
   classes: {
     type: Object,
     require: true
   }
 })
+
+const sections = ref({})
+const form = useForm({
+  name: '',
+  email: '',
+  class_id: '',
+  section_id: '',
+})
+
+watch(
+  () => form.class_id,
+  (newValue) => {
+    getSections(newValue)
+  })
+
+const getSections = (classId) => {
+  axios.get('/api/sections?class_id=' + classId).then((response) => {
+    sections.value = response.data
+  })
+
+}
+
+const createStudent = () => {
+  form.post(route('students.store'))
+}
 </script>
